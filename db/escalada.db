@@ -1,0 +1,108 @@
+-- ======================================================
+-- CONFIGURACIÓN INICIAL
+-- ======================================================
+PRAGMA foreign_keys = ON;
+
+-- ======================================================
+-- 1. TABLA POBLACIO
+-- ======================================================
+CREATE TABLE IF NOT EXISTS Poblacio (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom TEXT UNIQUE NOT NULL
+);
+
+-- ======================================================
+-- 2. TABLA ESCOLA
+-- ======================================================
+CREATE TABLE IF NOT EXISTS Escola (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom TEXT UNIQUE NOT NULL,
+    aproximacio TEXT,
+    num_vies INTEGER DEFAULT 0,
+    popularitat TEXT CHECK (popularitat IN ('baixa', 'mitjana', 'alta')),
+    restriccions TEXT
+);
+
+-- ======================================================
+-- 3. TABLA INTERMEDIA ESCOLA_POBLACIO (Relación N:M)
+-- ======================================================
+-- Permite que una Escuela tenga varias Poblaciones
+CREATE TABLE IF NOT EXISTS Escola_Poblacio (
+    escola_id INTEGER,
+    poblacio_id INTEGER,
+    PRIMARY KEY (escola_id, poblacio_id),
+    FOREIGN KEY (escola_id) REFERENCES Escola (id) ON DELETE CASCADE,
+    FOREIGN KEY (poblacio_id) REFERENCES Poblacio (id) ON DELETE CASCADE
+);
+
+-- ======================================================
+-- 4. TABLA SECTOR
+-- ======================================================
+CREATE TABLE IF NOT EXISTS Sector (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    escola_id INTEGER NOT NULL,
+    nom TEXT NOT NULL,
+    coordenades TEXT,
+    aproximacio TEXT,
+    num_vies INTEGER DEFAULT 0,
+    popularitat TEXT CHECK (popularitat IN ('baixa', 'mitjana', 'alta')),
+    restriccions TEXT,
+    FOREIGN KEY (escola_id) REFERENCES Escola (id) ON DELETE CASCADE,
+    UNIQUE (escola_id, nom)
+);
+
+-- ======================================================
+-- 5. TABLA ESCALADOR
+-- ======================================================
+CREATE TABLE IF NOT EXISTS Escalador (
+    alias TEXT PRIMARY KEY,
+    nom TEXT NOT NULL,
+    edat INTEGER,
+    nivell_max TEXT, -- Calculado mediante Assoliments
+    estil_pref TEXT CHECK (estil_pref IN ('esportiva', 'clàssica', 'gel'))
+);
+
+-- ======================================================
+-- 6. TABLA VIA
+-- ======================================================
+CREATE TABLE IF NOT EXISTS Via (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sector_id INTEGER NOT NULL,
+    creador_alias TEXT NOT NULL,
+    nom TEXT NOT NULL,
+    tipus TEXT CHECK (tipus IN ('esportiva', 'clàssica', 'gel')),
+    estat TEXT CHECK (estat IN ('Apte', 'construcció', 'tancada')),
+    data_reobertura DATE, -- Para el control automático de tiempo
+    roca TEXT CHECK (roca IN ('conglomerat', 'granit', 'calcaria', 'arenisca', 'altres')),
+    ancoratge TEXT, -- Filtrado por lógica Java
+    orientacio TEXT, -- Validar con Regex en Java: [N,NE,NO,SE,SO,E,O,S]
+    restriccions TEXT,
+    FOREIGN KEY (sector_id) REFERENCES Sector (id) ON DELETE CASCADE,
+    FOREIGN KEY (creador_alias) REFERENCES Escalador (alias)
+);
+
+-- ======================================================
+-- 7. TABLA LLARG
+-- ======================================================
+-- Una vía deportiva tendrá 1. Clásica/Gel tendrán N.
+CREATE TABLE IF NOT EXISTS Llarg (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    via_id INTEGER NOT NULL,
+    numero_llarg INTEGER NOT NULL,
+    llargada REAL NOT NULL,
+    grau TEXT NOT NULL,
+    FOREIGN KEY (via_id) REFERENCES Via (id) ON DELETE CASCADE
+);
+
+-- ======================================================
+-- 8. TABLA ASSOLIMENTS (Historial de éxitos)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS Assoliments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    escalador_alias TEXT NOT NULL,
+    via_id INTEGER NOT NULL,
+    data_completat DATE DEFAULT CURRENT_DATE,
+    grau_assolit TEXT, -- Grado de la vía en el momento de completarla
+    FOREIGN KEY (escalador_alias) REFERENCES Escalador (alias) ON DELETE CASCADE,
+    FOREIGN KEY (via_id) REFERENCES Via (id) ON DELETE CASCADE
+);
