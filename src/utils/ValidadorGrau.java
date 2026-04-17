@@ -1,9 +1,9 @@
-package com.escalada.utils;
+package utils;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Validator {
+public class ValidadorGrau {
 
     // ! LLISTA DELS GRAUS ORDENATS DE MENYS A MÉS
     private static final List<String> GRADES = Arrays.asList(
