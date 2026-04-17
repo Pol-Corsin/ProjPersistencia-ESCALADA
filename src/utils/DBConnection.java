@@ -1,7 +1,7 @@
 package utils;
 
 public class DBConnection {
-    private static Connection connection = null;
+    private static DBConnection connection = null;
 
     // ! OPEN CONNECTION
     public static Connection openCon() {
