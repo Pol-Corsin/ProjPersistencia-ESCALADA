@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Escola (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom TEXT UNIQUE NOT NULL,
     aproximacio TEXT,
-    num_vies INTEGER DEFAULT 0,
+    num_vies INTEGER DEFAULT 0, -- ! ELIMINAR
     popularitat TEXT CHECK (popularitat IN ('baixa', 'mitjana', 'alta')),
     restriccions TEXT
 );
@@ -58,7 +58,6 @@ CREATE TABLE IF NOT EXISTS Escalador (
     alias TEXT PRIMARY KEY,
     nom TEXT NOT NULL,
     edat INTEGER,
-    nivell_max TEXT, -- Calculado mediante Assoliments
     estil_pref TEXT CHECK (estil_pref IN ('esportiva', 'clàssica', 'gel'))
 );
 
