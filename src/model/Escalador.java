@@ -43,7 +43,7 @@ public class Escalador {
 
     // ? ESTIL PREFERIT
     public String getEstilPref() {
-
+        return estilPref;
     }
     public void setEstilPref(String estilPref) {
         this.estilPref = estilPref;
