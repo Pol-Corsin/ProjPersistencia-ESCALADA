@@ -18,15 +18,14 @@ CREATE TABLE IF NOT EXISTS Escola (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nom TEXT UNIQUE NOT NULL,
     aproximacio TEXT,
-    num_vies INTEGER DEFAULT 0, -- ! ELIMINAR
     popularitat TEXT CHECK (popularitat IN ('baixa', 'mitjana', 'alta')),
     restriccions TEXT
+    -- Se elimina num_vies: se calcula con un COUNT(*) en Java/SQL
 );
 
 -- ======================================================
--- 3. TABLA INTERMEDIA ESCOLA_POBLACIO (Relación N:M)
+-- 3. TABLA INTERMEDIA ESCOLA_POBLACIO
 -- ======================================================
--- Permite que una Escuela tenga varias Poblaciones
 CREATE TABLE IF NOT EXISTS Escola_Poblacio (
     escola_id INTEGER,
     poblacio_id INTEGER,
@@ -44,11 +43,11 @@ CREATE TABLE IF NOT EXISTS Sector (
     nom TEXT NOT NULL,
     coordenades TEXT,
     aproximacio TEXT,
-    num_vies INTEGER DEFAULT 0,
     popularitat TEXT CHECK (popularitat IN ('baixa', 'mitjana', 'alta')),
     restriccions TEXT,
     FOREIGN KEY (escola_id) REFERENCES Escola (id) ON DELETE CASCADE,
     UNIQUE (escola_id, nom)
+    -- Se elimina num_vies: se calcula dinámicamente
 );
 
 -- ======================================================
@@ -59,6 +58,7 @@ CREATE TABLE IF NOT EXISTS Escalador (
     nom TEXT NOT NULL,
     edat INTEGER,
     estil_pref TEXT CHECK (estil_pref IN ('esportiva', 'clàssica', 'gel'))
+    -- Se elimina nivell_max: se calcula desde la tabla Assoliments
 );
 
 -- ======================================================
@@ -71,19 +71,18 @@ CREATE TABLE IF NOT EXISTS Via (
     nom TEXT NOT NULL,
     tipus TEXT CHECK (tipus IN ('esportiva', 'clàssica', 'gel')),
     estat TEXT CHECK (estat IN ('Apte', 'construcció', 'tancada')),
-    data_reobertura DATE, -- Para el control automático de tiempo
+    data_reobertura DATE, 
     roca TEXT CHECK (roca IN ('conglomerat', 'granit', 'calcaria', 'arenisca', 'altres')),
-    ancoratge TEXT, -- Filtrado por lógica Java
-    orientacio TEXT, -- Validar con Regex en Java: [N,NE,NO,SE,SO,E,O,S]
+    ancoratge TEXT, 
+    orientacio TEXT, 
     restriccions TEXT,
     FOREIGN KEY (sector_id) REFERENCES Sector (id) ON DELETE CASCADE,
-    FOREIGN KEY (creador_alias) REFERENCES Escalador (alias)
+    FOREIGN KEY (creador_alias) REFERENCES Escalador (alias) ON UPDATE CASCADE
 );
 
 -- ======================================================
 -- 7. TABLA LLARG
 -- ======================================================
--- Una vía deportiva tendrá 1. Clásica/Gel tendrán N.
 CREATE TABLE IF NOT EXISTS Llarg (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     via_id INTEGER NOT NULL,
@@ -94,14 +93,14 @@ CREATE TABLE IF NOT EXISTS Llarg (
 );
 
 -- ======================================================
--- 8. TABLA ASSOLIMENTS (Historial de éxitos)
+-- 8. TABLA ASSOLIMENTS
 -- ======================================================
 CREATE TABLE IF NOT EXISTS Assoliments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     escalador_alias TEXT NOT NULL,
     via_id INTEGER NOT NULL,
-    data_completat DATE DEFAULT CURRENT_DATE,
-    grau_assolit TEXT, -- Grado de la vía en el momento de completarla
-    FOREIGN KEY (escalador_alias) REFERENCES Escalador (alias) ON DELETE CASCADE,
+    data_completat DATE DEFAULT (date('now')), 
+    grau_assolit TEXT NOT NULL, 
+    FOREIGN KEY (escalador_alias) REFERENCES Escalador (alias) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (via_id) REFERENCES Via (id) ON DELETE CASCADE
 );
