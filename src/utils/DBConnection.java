@@ -1,35 +1,45 @@
 package utils;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class DBConnection {
-    private static DBConnection connection = null;
+    // La ruta debe coincidir con la carpeta de tu proyecto (visto en tus capturas)
+    private static final String URL = "jdbc:sqlite:testsdb/test_db.db";
+    private static Connection instance = null;
 
-    // ! OPEN CONNECTION
-    public static Connection openCon() {
+    /**
+     * Obtiene la conexión actual o crea una nueva si no existe.
+     */
+    public static Connection getConnection() {
         try {
-            connection = DriverManager.getConnection("jdbc:sqlite:escalada.db");
-            System.out.println("[  ✔  ] Connexió Establerta correctament!");
-
+            // Si la conexión no existe o se ha cerrado, la abrimos
+            if (instance == null || instance.isClosed()) {
+                instance = DriverManager.getConnection(URL);
+                
+                // ACTIVAR LAS FOREIGN KEYS (Vital para SQLite)
+                try (Statement stmt = instance.createStatement()) {
+                    stmt.execute("PRAGMA foreign_keys = ON;");
+                }
+            }
         } catch (SQLException e) {
-            System.out.println("Error: No s'ha pogut establir la connexió");
-            System.out.println(e.getMessage());
+            System.err.println("Error al conectar con la base de datos: " + e.getMessage());
         }
-        return connection;
+        return instance;
     }
 
-    // ! CLOSE CONNECTION
-    public static void closeCon(Connection con) {
-        if (con != null) {
+    /**
+     * Cierra la conexión si está abierta.
+     */
+    public static void closeConnection() {
+        if (instance != null) {
             try {
-                con.close();
-                System.out.println("[  ✘  ] Connexió tancada");
+                instance.close();
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
             }
         }
-    }
-
-    // ! CONNECTIONN
-    public static Connection getConnection() {
-        return connection;
     }
 }
