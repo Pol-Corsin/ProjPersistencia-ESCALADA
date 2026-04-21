@@ -54,7 +54,8 @@ CREATE TABLE IF NOT EXISTS Sector (
 -- 5. TABLA ESCALADOR
 -- ======================================================
 CREATE TABLE IF NOT EXISTS Escalador (
-    alias TEXT PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    alias TEXT UNIQUE NOT NULL,
     nom TEXT NOT NULL,
     edat INTEGER,
     estil_pref TEXT CHECK (estil_pref IN ('esportiva', 'clàssica', 'gel'))
@@ -67,7 +68,7 @@ CREATE TABLE IF NOT EXISTS Escalador (
 CREATE TABLE IF NOT EXISTS Via (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     sector_id INTEGER NOT NULL,
-    creador_alias TEXT NOT NULL,
+    creador_id INTEGER NOT NULL,
     nom TEXT NOT NULL,
     tipus TEXT CHECK (tipus IN ('esportiva', 'clàssica', 'gel')),
     estat TEXT CHECK (estat IN ('Apte', 'construcció', 'tancada')),
@@ -77,7 +78,7 @@ CREATE TABLE IF NOT EXISTS Via (
     orientacio TEXT, 
     restriccions TEXT,
     FOREIGN KEY (sector_id) REFERENCES Sector (id) ON DELETE CASCADE,
-    FOREIGN KEY (creador_alias) REFERENCES Escalador (alias) ON UPDATE CASCADE
+    FOREIGN KEY (creador_id) REFERENCES Escalador (id) ON UPDATE CASCADE
 );
 
 -- ======================================================
