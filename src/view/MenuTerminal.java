@@ -26,7 +26,7 @@ public class MenuTerminal {
         missatge("2) VIA");
         missatge("3) Escola");
         missatge("4) Sector");
-        missatge("0) Soritr");
+        missatge("0) Enrere");
     }
 
     // Menu principal de modificar de l'aplicació
@@ -38,7 +38,7 @@ public class MenuTerminal {
         missatge("2) VIA");
         missatge("3) Escola");
         missatge("4) Sector");
-        missatge("0) Soritr");
+        missatge("0) Enrere");
     }
     
     // Menu principal de llistar de l'aplicació
@@ -50,7 +50,7 @@ public class MenuTerminal {
         missatge("2) VIA");
         missatge("3) Escola");
         missatge("4) Sector");
-        missatge("0) Soritr");
+        missatge("0) Enrere");
     }
 
     // Menu principal d'eliminar de l'aplicació
@@ -62,6 +62,6 @@ public class MenuTerminal {
         missatge("2) VIA");
         missatge("3) Escola");
         missatge("4) Sector");
-        missatge("0) Soritr");
+        missatge("0) Enrere");
     }
 }
