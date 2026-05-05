@@ -2,12 +2,16 @@ package model;
 
 public class Escalador {
     // ! DADES
+    private int id;
     private String alias;
     private String nom;
     private int edat;
     private String estilPref;
 
-    // ! CONSTRUCTOR (Corregido: quitamos el parámetro sobrante)
+    // ! CONSTRUCTOR buit
+    public Escalador() {}
+    
+    // ! CONSTRUCTOR 
     public Escalador(String alias, String nom, int edat, String estilPref) {
         this.alias = alias;
         this.nom = nom;
@@ -16,6 +20,14 @@ public class Escalador {
     }
 
     // ! GETTERS & SETTERS
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public String getAlias() {
         return alias;
     }
