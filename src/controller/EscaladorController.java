@@ -54,30 +54,32 @@ public class EscaladorController {
         }
     }
 
+    // ! MODIFICAR ESCALADOR
     public void modificarEscalador() {
         view.missatge("\n=== MODIFICAR ESCALADOR ===");
         List<Escalador> escaladors = escaladorDAO.findAll();
-        
+
         if (escaladors.isEmpty()) {
             view.mostrarError("No hi ha escaladors.");
             return;
         }
-        
+
         view.missatge("Escaladors disponibles:");
         for (Escalador e : escaladors) {
             view.missatge(e.getId() + ". " + e.getAlias() + " - " + e.getNom());
         }
-        
+
         view.missatge("ID de l'escalador a modificar (0 per sortir):");
         int id = leerEntero();
-        if (id == 0) return;
-        
+        if (id == 0)
+            return;
+
         Escalador escalador = escaladorDAO.findById(id);
         if (escalador == null) {
             view.mostrarError("Escalador no trobat.");
             return;
         }
-        
+
         // Menú de modificació
         view.missatge("\nQuè voleu modificar?");
         view.missatge("1. Alias");
@@ -85,7 +87,7 @@ public class EscaladorController {
         view.missatge("3. Edat");
         view.missatge("4. Estil preferit");
         view.missatge("0. Sortir");
-        
+
         int opcio = leerEntero();
         switch (opcio) {
             case 1:
@@ -106,7 +108,7 @@ public class EscaladorController {
             default:
                 return;
         }
-        
+
         try {
             escaladorDAO.update(escalador);
             view.mostrarExito("Escalador modificat.");
@@ -115,16 +117,16 @@ public class EscaladorController {
         }
     }
 
-    // ==================== LLISTAR ESCALADOR ====================
+    // ! LLISTAR ESCALADOR
     public void llistarEscaladors() {
         view.missatge("\n=== LLISTAR ESCALADORS ===");
         List<Escalador> escaladors = escaladorDAO.findAll();
-        
+
         if (escaladors.isEmpty()) {
             view.missatge("No hi ha escaladors.");
             return;
         }
-        
+
         for (Escalador e : escaladors) {
             view.missatge("---");
             view.missatge("ID: " + e.getId());
@@ -135,5 +137,36 @@ public class EscaladorController {
         }
     }
 
-    
+    // ELIMINAR ESCALADOR
+    public void eliminarEscalador() {
+        view.missatge("\n=== ELIMINAR ESCALADOR ===");
+        List<Escalador> escaladors = escaladorDAO.findAll();
+
+        if (escaladors.isEmpty()) {
+            view.mostrarError("No hi ha escaladors.");
+            return;
+        }
+
+        view.missatge("Escaladors disponibles:");
+        for (Escalador e : escaladors) {
+            view.missatge(e.getId() + ". " + e.getAlias() + " - " + e.getNom());
+        }
+
+        view.missatge("ID de l'escalador a eliminar (0 per sortir):");
+        int id = leerEntero();
+        if (id == 0)
+            return;
+
+        view.missatge("Esteu segur? (s/n):");
+        String confirm = sc.nextLine();
+        if (confirm.equalsIgnoreCase("s")) {
+            try {
+                escaladorDAO.delete(id);
+                view.mostrarExito("Escalador eliminat.");
+            } catch (RuntimeException e) {
+                view.mostrarError("Error: " + e.getMessage());
+            }
+        }
+    }
+
 }
