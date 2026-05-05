@@ -1,9 +1,9 @@
 package controller;
 
 import java.util.Scanner;
+
+import DAO.interfaces.EscaladorDAO;
 import model.Escalador;
-import DAO.interfaces.EscaladorDAO; // Importante usar la interfaz
-import DAO.sqlite.SQLiteEscaladorDAO;
 import view.MenuTerminal;
 
 public class EscaladorController {
@@ -18,61 +18,38 @@ public class EscaladorController {
         this.sc = new Scanner(System.in);
     }
 
-    // --- MÉTODO PRINCIPAL DE CREACIÓN ---
+    // ! CREAR ESCALADOR
     public void crearEscalador() {
+        view.missatge("\n=== CREAR ESCALADOR ===");
+
         view.pedirDato("Alias");
         String alias = sc.nextLine();
-        
+
+        // Verificar que no existeix
+        if (escaladorDAO.findByAlias(alias) != null) {
+            view.mostrarError("Error: L'alias '" + alias + "' ja està registrat.");
+            return;
+        }
+
         view.pedirDato("Nom");
         String nom = sc.nextLine();
 
         view.pedirDato("Edat");
-        int edad = leerEntero();
+        int edat = leerEntero();
 
-        // Llamamos al método que hemos separado abajo
-        String estil = elegirEstil(); 
+        String estil = elegirEstil();
 
-        // Creamos el objeto con los datos limpios
-        Escalador nuevo = new Escalador(alias, nom, edad, estil);
+        Escalador nou = new Escalador(alias, nom, edat, estil);
 
         try {
-            escaladorDAO.create(nuevo);
-            view.mostrarExito();
+            escaladorDAO.create(nou);
+            view.mostrarExito("Escalador creat correctament!");
         } catch (RuntimeException e) {
-            if (e.getMessage().equals("EL_ALIAS_YA_EXISTE")) {
-                view.mostrarError("Error: El alias '" + alias + "' ya está registrado.");
+            if (e.getMessage() != null && e.getMessage().equals("EL_ALIAS_YA_EXISTE")) {
+                view.mostrarError("Error: L'alias '" + alias + "' ja està registrat.");
             } else {
-                view.mostrarError("Ocurrió un error inesperado al guardar.");
+                view.mostrarError("Error inesperat en crear l'escalador.");
             }
-        }
-    }
-
-    // --- MÉTODO PARA ELEGIR ESTILO (FUERA DE CREAR) ---
-    private String elegirEstil() {
-        String estil = "";
-        boolean valido = false;
-
-        while (!valido) {
-            view.mostrarOpcionesEstil(); 
-            int seleccion = leerEntero(); 
-
-            switch (seleccion) {
-                case 1 -> { estil = "esportiva"; valido = true; }
-                case 2 -> { estil = "clàssica"; valido = true; }
-                case 3 -> { estil = "gel"; valido = true; }
-                default -> view.mostrarError("Opción no válida. Inténtelo de nuevo.");
-            }
-        }
-        return estil;
-    }
-
-    // --- UTILIDAD PARA LEER ENTEROS SIN ERRORES ---
-    private int leerEntero() {
-        try {
-            int num = Integer.parseInt(sc.nextLine());
-            return num;
-        } catch (NumberFormatException e) {
-            return -1; 
         }
     }
 }
