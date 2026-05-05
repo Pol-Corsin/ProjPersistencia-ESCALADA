@@ -169,4 +169,43 @@ public class EscaladorController {
         }
     }
 
+    private String elegirEstil() {
+        String estil = "";
+        boolean valido = false;
+
+        while (!valido) {
+            view.mostrarOpcionesEstil();
+            int seleccion = leerEntero();
+
+            switch (seleccion) {
+                case 1:
+                    estil = "esportiva";
+                    valido = true;
+                    break;
+                case 2:
+                    estil = "clàssica";
+                    valido = true;
+                    break;
+                case 3:
+                    estil = "gel";
+                    valido = true;
+                    break;
+                default:
+                    view.mostrarError("Opció no vàlida. Intenteu de nou.");
+            }
+        }
+        return estil;
+    }
+
+    private int leerEntero() {
+        while (true) {
+            try {
+                String input = sc.nextLine();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                view.mostrarError("Introdueix un número vàlid:");
+            }
+        }
+    }
+
 }
