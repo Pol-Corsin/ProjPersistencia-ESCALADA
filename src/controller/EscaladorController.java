@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.List;
 import java.util.Scanner;
 
 import DAO.interfaces.EscaladorDAO;
@@ -52,4 +53,87 @@ public class EscaladorController {
             }
         }
     }
+
+    public void modificarEscalador() {
+        view.missatge("\n=== MODIFICAR ESCALADOR ===");
+        List<Escalador> escaladors = escaladorDAO.findAll();
+        
+        if (escaladors.isEmpty()) {
+            view.mostrarError("No hi ha escaladors.");
+            return;
+        }
+        
+        view.missatge("Escaladors disponibles:");
+        for (Escalador e : escaladors) {
+            view.missatge(e.getId() + ". " + e.getAlias() + " - " + e.getNom());
+        }
+        
+        view.missatge("ID de l'escalador a modificar (0 per sortir):");
+        int id = leerEntero();
+        if (id == 0) return;
+        
+        Escalador escalador = escaladorDAO.findById(id);
+        if (escalador == null) {
+            view.mostrarError("Escalador no trobat.");
+            return;
+        }
+        
+        // Menú de modificació
+        view.missatge("\nQuè voleu modificar?");
+        view.missatge("1. Alias");
+        view.missatge("2. Nom");
+        view.missatge("3. Edat");
+        view.missatge("4. Estil preferit");
+        view.missatge("0. Sortir");
+        
+        int opcio = leerEntero();
+        switch (opcio) {
+            case 1:
+                view.missatge("Nou alias:");
+                escalador.setAlias(sc.nextLine());
+                break;
+            case 2:
+                view.missatge("Nou nom:");
+                escalador.setNom(sc.nextLine());
+                break;
+            case 3:
+                view.missatge("Nova edat:");
+                escalador.setEdat(leerEntero());
+                break;
+            case 4:
+                escalador.setEstilPref(elegirEstil());
+                break;
+            default:
+                return;
+        }
+        
+        try {
+            escaladorDAO.update(escalador);
+            view.mostrarExito("Escalador modificat.");
+        } catch (RuntimeException e) {
+            view.mostrarError("Error: " + e.getMessage());
+        }
+    }
+
+    // ==================== LLISTAR ESCALADOR ====================
+    public void llistarEscaladors() {
+        view.missatge("\n=== LLISTAR ESCALADORS ===");
+        List<Escalador> escaladors = escaladorDAO.findAll();
+        
+        if (escaladors.isEmpty()) {
+            view.missatge("No hi ha escaladors.");
+            return;
+        }
+        
+        for (Escalador e : escaladors) {
+            view.missatge("---");
+            view.missatge("ID: " + e.getId());
+            view.missatge("Alias: " + e.getAlias());
+            view.missatge("Nom: " + e.getNom());
+            view.missatge("Edat: " + e.getEdat());
+            view.missatge("Estil preferit: " + e.getEstilPref());
+        }
+    }
+
+    
 }
