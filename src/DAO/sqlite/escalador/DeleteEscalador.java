@@ -7,12 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DeleteEscalador {
-    
+
     public void execute(int id) {
         String sql = "DELETE FROM Escalador WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
