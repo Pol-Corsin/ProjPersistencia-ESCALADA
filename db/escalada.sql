@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS Escola (
     aproximacio TEXT,
     popularitat TEXT CHECK (popularitat IN ('baixa', 'mitjana', 'alta')),
     restriccions TEXT
-    -- Se elimina num_vies: se calcula con un COUNT(*) en Java/SQL
 );
 
 -- ======================================================
@@ -41,13 +40,13 @@ CREATE TABLE IF NOT EXISTS Sector (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     escola_id INTEGER NOT NULL,
     nom TEXT NOT NULL,
-    coordenades TEXT,
+    latitud INT,
+    longitud INT,
     aproximacio TEXT,
     popularitat TEXT CHECK (popularitat IN ('baixa', 'mitjana', 'alta')),
     restriccions TEXT,
     FOREIGN KEY (escola_id) REFERENCES Escola (id) ON DELETE CASCADE,
     UNIQUE (escola_id, nom)
-    -- Se elimina num_vies: se calcula dinámicamente
 );
 
 -- ======================================================
@@ -59,7 +58,6 @@ CREATE TABLE IF NOT EXISTS Escalador (
     nom TEXT NOT NULL,
     edat INTEGER,
     estil_pref TEXT CHECK (estil_pref IN ('esportiva', 'clàssica', 'gel'))
-    -- Se elimina nivell_max: se calcula desde la tabla Assoliments
 );
 
 -- ======================================================
