@@ -4,12 +4,12 @@ import model.Sector;
 import java.util.List;
 
 public interface SectorDAO {
-    // Operaciones CRUD básicas
+    // CRUD 
     void create(Sector sector, int escolaId);
     void update(Sector sector);
     void delete(int id);
     
-    // Búsquedas
+    // Busquedas
     Sector findById(int id);
     Sector findByNomAndEscolaId(String nom, int escolaId);
     List<Sector> findAll();
