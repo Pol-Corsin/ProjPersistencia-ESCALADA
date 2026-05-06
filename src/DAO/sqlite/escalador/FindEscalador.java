@@ -32,16 +32,37 @@ public class FindEscalador {
         return null;
     }
 
+    public Escalador byAlias(String alias) {
+        String sql = "SELECT * FROM Escalador WHERE alias = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, alias);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return mapResultSetToEscalador(rs);
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("ERROR_BUSCAR_ESCALADOR_ALIAS");
+        }
+
+        return null;
+    }
+
     public List<Escalador> all() {
         String sql = "SELECT * FROM Escalador ORDER BY alias";
         List<Escalador> escaladors = new ArrayList<>();
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                    ResultSet rs = pstmt.executeQuery();
+            ResultSet rs = pstmt.executeQuery();
 
-                while (rs.next()) {
-                    escaladors.add(mapResultSetToEscalador(rs));
-                }
+            while (rs.next()) {
+                escaladors.add(mapResultSetToEscalador(rs));
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("ERROR_LISTAR_ESCALADORS");
