@@ -15,7 +15,6 @@ public class Assoliment {
         this.grauAssolit = grauAssolit;
     }
 
-    // Alias del Escalador
     public String getEscaladorAlias() {
         return escaladorAlias;
     }
@@ -24,7 +23,6 @@ public class Assoliment {
         this.escaladorAlias = escaladorAlias;
     }
 
-    // Id de la via
     public int getViaId() {
         return viaId;
     }
@@ -33,7 +31,6 @@ public class Assoliment {
         this.viaId = viaId;
     }
 
-    // Data de la completacio
     public LocalDate getDataCompletat() {
         return dataCompletat;
     }
@@ -42,7 +39,6 @@ public class Assoliment {
         this.dataCompletat = dataCompletat;
     }
 
-    // Grau de la via assolida
     public String getGrauAssolit() {
         return grauAssolit;
     }
