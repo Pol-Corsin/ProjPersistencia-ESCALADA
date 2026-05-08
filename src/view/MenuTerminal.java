@@ -1,12 +1,16 @@
 package view;
 
+import java.util.Scanner;
+
 public class MenuTerminal {
-    public static void missatge(String msg){
+    private static final Scanner sc = new Scanner(System.in);
+
+    public static void missatge(String msg) {
         System.out.println(msg);
     }
-    
-    //Menu principal de la aplicació
-    public static void menu(){
+
+    // Menu principal de la aplicació
+    public static void menu() {
         missatge("############################");
         missatge("#            MENU          #");
         missatge("############################");
@@ -18,7 +22,7 @@ public class MenuTerminal {
     }
 
     // Menu principal de crear de l'aplicació
-    public static void menuCrear(){
+    public static void menuCrear() {
         missatge("############################");
         missatge("#           CREAR          #");
         missatge("############################");
@@ -30,7 +34,7 @@ public class MenuTerminal {
     }
 
     // Menu principal de modificar de l'aplicació
-    public static void menuModificar(){
+    public static void menuModificar() {
         missatge("############################");
         missatge("#         MODIFICAR        #");
         missatge("############################");
@@ -40,9 +44,9 @@ public class MenuTerminal {
         missatge("4) Sector");
         missatge("0) Enrere");
     }
-    
+
     // Menu principal de llistar de l'aplicació
-    public static void menuLlistar(){
+    public static void menuLlistar() {
         missatge("############################");
         missatge("#          LLISTAR         #");
         missatge("############################");
@@ -54,7 +58,7 @@ public class MenuTerminal {
     }
 
     // Menu principal d'eliminar de l'aplicació
-    public static void menuEliminar(){
+    public static void menuEliminar() {
         missatge("############################");
         missatge("#          ELIMINAR        #");
         missatge("############################");
@@ -65,34 +69,34 @@ public class MenuTerminal {
         missatge("0) Enrere");
     }
 
-    //#### FUNCIONES AUXILIARES (se usan en el controlador y queda mas limpio)
+    // #### FUNCIONES AUXILIARES (se usan en el controlador y queda mas limpio)
     public static void pedirDato(String dato) {
         System.out.print(dato + ": ");
     }
-    
+
     public static void mostrarOpcionesEstil() {
         missatge("\nEstil preferit:");
         missatge("1. Esportiva");
         missatge("2. Clàssica");
         missatge("3. Gel");
     }
-    
+
     public static void mostrarExito() {
         missatge("✅ Operació realitzada amb èxit!");
     }
-    
+
     public static void mostrarExito(String msg) {
         missatge("✅ " + msg);
     }
-    
+
     public static void mostrarError(String msg) {
         missatge("❌ " + msg);
     }
-    
+
     public static String leerLinea() {
         return sc.nextLine();
     }
-    
+
     public static int leerEntero() {
         while (true) {
             try {
@@ -103,7 +107,7 @@ public class MenuTerminal {
             }
         }
     }
-    
+
     public static int leerEntero(int min, int max) {
         while (true) {
             try {
