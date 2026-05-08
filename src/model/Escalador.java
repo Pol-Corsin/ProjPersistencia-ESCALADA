@@ -1,17 +1,14 @@
 package model;
 
 public class Escalador {
-    // ! DADES
     private int id;
     private String alias;
     private String nom;
     private int edat;
     private String estilPref;
 
-    // ! CONSTRUCTOR buit
     public Escalador() {}
     
-    // ! CONSTRUCTOR 
     public Escalador(String alias, String nom, int edat, String estilPref) {
         this.alias = alias;
         this.nom = nom;
