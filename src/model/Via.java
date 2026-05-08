@@ -3,8 +3,9 @@ package model;
 import java.time.LocalDate;
 
 public class Via {
+    private int id;
     private Integer sectorId;
-    private String creadorAlias;
+    private Integer creadorId;
     private String nom;
     private String tipus;
     private String estat;
@@ -13,11 +14,15 @@ public class Via {
     private String ancoratge;
     private String orientacio;
     private String restriccions;
+    private String grau;
     
-    public Via(Integer sectorId, String creadorAlias, String nom, String tipus, String estat, LocalDate dataReobertura,
+    // Constructor buit
+    public Via() {}
+    
+    public Via(Integer sectorId, Integer creadorId, String nom, String tipus, String estat, LocalDate dataReobertura,
         String roca, String ancoratge, String orientacio, String restriccions) {
         this.sectorId = sectorId;
-        this.creadorAlias = creadorAlias;
+        this.creadorId = creadorId;
         this.nom = nom;
         this.tipus = tipus;
         this.estat = estat;
@@ -30,6 +35,15 @@ public class Via {
 
     // GETTERS SETTERS
 
+    // ID
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     // Sector
     public Integer getSectorId() {
         return sectorId;
@@ -39,13 +53,13 @@ public class Via {
         this.sectorId = sectorId;
     }
 
-    //Alias
-    public String getCreadorAlias() {
-        return creadorAlias;
+    //Creador ID
+    public Integer getCreadorId() {
+        return creadorId;
     }
 
-    public void setCreadorAlias(String creadorAlias) {
-        this.creadorAlias = creadorAlias;
+    public void setCreadorId(Integer creadorId) {
+        this.creadorId = creadorId;
     }
 
     // Nom
@@ -116,8 +130,17 @@ public class Via {
         return restriccions;
     }
 
-    public void setRestriccions(String restriccions) {
+public void setRestriccions(String restriccions) {
         this.restriccions = restriccions;
+    }
+    
+    // Grau
+    public String getGrau() {
+        return grau;
+    }
+    
+    public void setGrau(String grau) {
+        this.grau = grau;
     }
 
     
