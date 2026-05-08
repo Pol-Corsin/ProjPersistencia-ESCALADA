@@ -64,4 +64,57 @@ public class MenuTerminal {
         missatge("4) Sector");
         missatge("0) Enrere");
     }
+
+    //#### FUNCIONES AUXILIARES (se usan en el controlador y queda mas limpio)
+    public static void pedirDato(String dato) {
+        System.out.print(dato + ": ");
+    }
+    
+    public static void mostrarOpcionesEstil() {
+        missatge("\nEstil preferit:");
+        missatge("1. Esportiva");
+        missatge("2. Clàssica");
+        missatge("3. Gel");
+    }
+    
+    public static void mostrarExito() {
+        missatge("✅ Operació realitzada amb èxit!");
+    }
+    
+    public static void mostrarExito(String msg) {
+        missatge("✅ " + msg);
+    }
+    
+    public static void mostrarError(String msg) {
+        missatge("❌ " + msg);
+    }
+    
+    public static String leerLinea() {
+        return sc.nextLine();
+    }
+    
+    public static int leerEntero() {
+        while (true) {
+            try {
+                String input = sc.nextLine();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                missatge("Introdueix un número vàlid:");
+            }
+        }
+    }
+    
+    public static int leerEntero(int min, int max) {
+        while (true) {
+            try {
+                int valor = Integer.parseInt(sc.nextLine());
+                if (valor >= min && valor <= max) {
+                    return valor;
+                }
+                missatge("Introdueix un número entre " + min + " i " + max + ":");
+            } catch (NumberFormatException e) {
+                missatge("Introdueix un número vàlid:");
+            }
+        }
+    }
 }
