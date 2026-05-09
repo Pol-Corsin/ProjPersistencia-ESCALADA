@@ -11,10 +11,11 @@ public class Escola {
     // Constructor buit
     public Escola() {}
     
-    public Escola(String nom, String aproximacio, String popularitat){
+    public Escola(String nom, String aproximacio, String popularitat, String restriccions){
         this.nom = nom;
         this.aproximacio = aproximacio;
         this.popularitat = popularitat;
+        this.restriccions = restriccions;
     }
 
     // GETTERS SETTERS
