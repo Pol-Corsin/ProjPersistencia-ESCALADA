@@ -18,26 +18,26 @@ public class EscaladorController {
         this.sc = new Scanner(System.in);
     }
 
-    //crear escalador
+    // crear escalador
     public void crearEscalador() {
         view.missatge("\n=== CREAR ESCALADOR ===");
-        
+
         view.pedirDato("Alias");
         String alias = sc.nextLine();
-        
+
         // Verificar que no existeix
         if (escaladorDAO.findByAlias(alias) != null) {
             view.mostrarError("Error: L'alias '" + alias + "' ja està registrat.");
             return;
         }
-        
+
         view.pedirDato("Nom");
         String nom = sc.nextLine();
 
         view.pedirDato("Edat");
         int edat = leerEntero();
 
-        String estil = elegirEstil(); 
+        String estil = elegirEstil();
 
         Escalador nou = new Escalador(alias, nom, edat, estil);
 
@@ -53,31 +53,32 @@ public class EscaladorController {
         }
     }
 
-    //modif escalador
+    // modif escalador
     public void modificarEscalador() {
         view.missatge("\n=== MODIFICAR ESCALADOR ===");
         List<Escalador> escaladors = escaladorDAO.findAll();
-        
+
         if (escaladors.isEmpty()) {
             view.mostrarError("No hi ha escaladors.");
             return;
         }
-        
+
         view.missatge("Escaladors disponibles:");
         for (Escalador e : escaladors) {
             view.missatge(e.getId() + ". " + e.getAlias() + " - " + e.getNom());
         }
-        
+
         view.missatge("ID de l'escalador a modificar (0 per sortir):");
         int id = leerEntero();
-        if (id == 0) return;
-        
+        if (id == 0)
+            return;
+
         Escalador escalador = escaladorDAO.findById(id);
         if (escalador == null) {
             view.mostrarError("Escalador no trobat.");
             return;
         }
-        
+
         // menu modif
         view.missatge("\nQuè voleu modificar?");
         view.missatge("1. Alias");
@@ -85,7 +86,7 @@ public class EscaladorController {
         view.missatge("3. Edat");
         view.missatge("4. Estil preferit");
         view.missatge("0. Sortir");
-        
+
         int opcio = leerEntero();
         switch (opcio) {
             case 1:
@@ -106,7 +107,7 @@ public class EscaladorController {
             default:
                 return;
         }
-        
+
         try {
             escaladorDAO.update(escalador);
             view.mostrarExito("Escalador modificat.");
@@ -119,12 +120,12 @@ public class EscaladorController {
     public void llistarEscaladors() {
         view.missatge("\n=== LLISTAR ESCALADORS ===");
         List<Escalador> escaladors = escaladorDAO.findAll();
-        
+
         if (escaladors.isEmpty()) {
             view.missatge("No hi ha escaladors.");
             return;
         }
-        
+
         for (Escalador e : escaladors) {
             view.missatge("---");
             view.missatge("ID: " + e.getId());
@@ -139,21 +140,22 @@ public class EscaladorController {
     public void eliminarEscalador() {
         view.missatge("\n=== ELIMINAR ESCALADOR ===");
         List<Escalador> escaladors = escaladorDAO.findAll();
-        
+
         if (escaladors.isEmpty()) {
             view.mostrarError("No hi ha escaladors.");
             return;
         }
-        
+
         view.missatge("Escaladors disponibles:");
         for (Escalador e : escaladors) {
             view.missatge(e.getId() + ". " + e.getAlias() + " - " + e.getNom());
         }
-        
+
         view.missatge("ID de l'escalador a eliminar (0 per sortir):");
         int id = leerEntero();
-        if (id == 0) return;
-        
+        if (id == 0)
+            return;
+
         view.missatge("Esteu segur? (s/n):");
         String confirm = sc.nextLine();
         if (confirm.equalsIgnoreCase("s")) {
@@ -167,16 +169,16 @@ public class EscaladorController {
     }
 
     // aux functions
-    
+
     private String elegirEstil() {
         String estil = "";
         boolean valido = false;
 
         while (!valido) {
-            view.mostrarOpcionesEstil(); 
-            int seleccion = leerEntero(); 
+            view.mostrarOpcionesEstil();
+            int seleccion = leerEntero();
 
-switch (seleccion) {
+            switch (seleccion) {
                 case 1:
                     estil = "esportiva";
                     valido = true;
@@ -195,7 +197,7 @@ switch (seleccion) {
         }
         return estil;
     }
-    
+
     private int leerEntero() {
         while (true) {
             try {
