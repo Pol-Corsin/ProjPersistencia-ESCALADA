@@ -109,6 +109,81 @@ public class SectorController {
         }
     }
 
+    public void modificarSector() {
+        view.missatge("\n=== MODIFICAR SECTOR ===");
+        List<Sector> sectors = sectorDAO.findAll();
+
+        if (sectors.isEmpty()) {
+            view.mostrarError("No hi ha sectors.");
+            return;
+        }
+
+        view.missatge("Sectors disponibles:");
+        for (Sector s : sectors) {
+            view.missatge(s.getId() + ". " + s.getNom() + " (Escola id: " + s.getEscolaId() + ")");
+        }
+
+        view.missatge("Escriu l'ID del sector a modificar (0 per sortir):");
+        int id = leerEntero();
+        if (id == 0)
+            return;
+
+        Sector sector = sectorDAO.findById(id);
+        if (sector == null) {
+            view.mostrarError("Sector no trobat");
+        }
+
+        // Menú de modificació
+        view.missatge("\nQuè voleu modificar?");
+        view.missatge("1. Nom");
+        view.missatge("2. Coordenades");
+        view.missatge("3. Aproximació");
+        view.missatge("4. Popularitat");
+        view.missatge("5. Restriccions");
+        view.missatge("0. Sortir");
+
+        int opcio = leerEntero();
+
+        switch (opcio) {
+            case 1:
+                view.missatge("Nou nom:");
+                sector.setNom(sc.nextLine());
+                break;
+            case 2:
+                view.missatge("Nova latitud:");
+                String latStr = sc.nextLine();
+                if (!latStr.trim().isEmpty()) {
+                    sector.setLatitud(Integer.parseInt(latStr));
+                }
+                view.missatge("Nova longitud:");
+                String lonStr = sc.nextLine();
+                if (!lonStr.trim().isEmpty()) {
+                    sector.setLongitud(Integer.parseInt(lonStr));
+                }
+                break;
+            case 3:
+                view.missatge("Nova aproximació:");
+                sector.setAproximacio(sc.nextLine());
+                break;
+            case 4:
+                sector.setPopularitat(elegirPopularitat());
+                break;
+            case 5:
+                view.missatge("Noves restriccions:");
+                sector.setRestriccions(sc.nextLine());
+                break;
+            default:
+                return;
+        }
+
+        try {
+            sectorDAO.update(sector);
+            view.mostrarExito("Sector modificat.");
+        } catch (RuntimeException e) {
+            view.mostrarError("Error: " + e.getMessage());
+        }
+    }
+
     // ########################## FUNC AUXILIARS
     private String elegirPopularitat() {
         view.missatge("\nPopularitat:");
