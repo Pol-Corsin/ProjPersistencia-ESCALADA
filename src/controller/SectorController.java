@@ -1,5 +1,156 @@
 package controller;
 
+import java.util.List;
+import java.util.Scanner;
+
+import DAO.interfaces.EscolaDAO;
+import DAO.interfaces.SectorDAO;
+import model.Sector;
+import view.MenuTerminal;
+
 public class SectorController {
-    
+
+    private final SectorDAO sectorDAO;
+    private final EscolaDAO escolaDAO;
+    private final MenuTerminal view;
+    private final Scanner sc;
+
+    public SectorController(SectorDAO sectorDAO, EscolaDAO escolaDAO) {
+        this.sectorDAO = sectorDAO;
+        this.escolaDAO = escolaDAO;
+        this.view = new MenuTerminal();
+        this.sc = new Scanner(System.in);
+    }
+
+    public void crearSector() {
+        view.missatge("\n=== CREAR SECTOR ===");
+
+        // 1. Escolir escola
+        view.missatge("Escoles disponibles:");
+        List<model.Escola> escoles = escolaDAO.findAll();
+        if (escoles.isEmpty()) {
+            view.mostrarError("No hi ha escoles. Creeu una escola primer.");
+            return;
+        }
+
+        for (model.Escola e : escoles) {
+            view.missatge(e.getId() + ". " + e.getNom());
+        }
+
+        view.missatge("ID de l'escola:");
+        int escolaId = leerEntero();
+        model.Escola escola = escolaDAO.findById(escolaId);
+        if (escola == null) {
+            view.mostrarError("Escola no trobada.");
+            return;
+        }
+
+        // 2. Nom del sector
+        view.missatge("Nom del Sector:");
+        String nom = sc.nextLine();
+
+        // Verificar que no estigui ja en la escola
+        if (sectorDAO.findByNomAndEscolaId(nom, escolaId) != null) {
+            view.mostrarError("Ja existeix un sector amb aquest nom en aquesta escola.");
+            return;
+        }
+
+        // 3. Coordenades
+        view.missatge("Latitud (enter: ex 41) - enter per none:");
+        String latStr = sc.nextLine();
+        Integer latitud = null;
+        if (!latStr.trim().isEmpty()) {
+            try {
+                latitud = Integer.parseInt(latStr);
+            } catch (NumberFormatException e) {
+                view.mostrarError("Latitud invàlida.");
+            }
+        }
+
+        view.missatge("Longitud (enter: ex 1) - enter per none:");
+        String lonStr = sc.nextLine();
+        Integer longitud = null;
+        if (!lonStr.trim().isEmpty()) {
+            try {
+                longitud = Integer.parseInt(lonStr);
+            } catch (NumberFormatException e) {
+                view.mostrarError("Longitud invàlida.");
+            }
+        }
+
+        // 4. Aproximació
+        view.missatge("Aproximació (com arribar):");
+        String aproximacio = sc.nextLine();
+
+        // 5. Popularitat
+        String popularitat = elegirPopularitat();
+
+        // 6. Restriccions (opcional)
+        view.missatge("Restriccions (enter per saltar):");
+        String restriccions = sc.nextLine();
+        if (restriccions.trim().isEmpty()) {
+            restriccions = null;
+        }
+
+        // Crear el sector
+        Sector nouSector = new Sector();
+        nouSector.setNom(nom);
+        nouSector.setLatitud(latitud);
+        nouSector.setLongitud(longitud);
+        nouSector.setAproximacio(aproximacio);
+        nouSector.setPopularitat(popularitat);
+        nouSector.setRestriccions(restriccions);
+
+        try {
+            sectorDAO.create(nouSector, escolaId);
+            view.mostrarExito("Sector creat correctament!");
+        } catch (RuntimeException e) {
+            view.mostrarError("Error en crear el sector: " + e.getMessage());
+        }
+    }
+
+    // ########################## FUNC AUXILIARS
+    private String elegirPopularitat() {
+        view.missatge("\nPopularitat:");
+        view.missatge("1. Baixa");
+        view.missatge("2. Mitjana");
+        view.missatge("3. Alta");
+
+        int opcio = leerEntero(1, 3);
+        switch (opcio) {
+            case 1:
+                return "baixa";
+            case 2:
+                return "mitjana";
+            case 3:
+                return "alta";
+            default:
+                return "mitjana";
+        }
+    }
+
+    private int leerEntero() {
+        while (true) {
+            try {
+                String input = sc.nextLine();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                view.mostrarError("Introdueix un número vàlid:");
+            }
+        }
+    }
+
+    private int leerEntero(int min, int max) {
+        while (true) {
+            try {
+                int valor = Integer.parseInt(sc.nextLine());
+                if (valor >= min && valor <= max) {
+                    return valor;
+                }
+                view.mostrarError("Introdueix un número entre " + min + " i " + max + ":");
+            } catch (NumberFormatException e) {
+                view.mostrarError("Introdueix un número vàlid:");
+            }
+        }
+    }
 }
