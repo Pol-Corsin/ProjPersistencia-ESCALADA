@@ -184,6 +184,65 @@ public class SectorController {
         }
     }
 
+    public void llistarSectors() {
+        view.missatge("\n=== LLISTAR SECTORS ===");
+        List<Sector> sectors = sectorDAO.findAll();
+
+        if (sectors.isEmpty()) {
+            view.missatge("No hi ha sectors.");
+            return;
+        }
+
+        for (Sector s : sectors) {
+            view.missatge("---");
+            view.missatge("ID: " + s.getId());
+            view.missatge("Nom: " + s.getNom());
+            view.missatge("Escola ID: " + s.getEscolaId());
+
+            if (s.getLatitud() != null && s.getLongitud() != null) {
+                view.missatge("Coordenades: " + s.getLatitud() + ", " + s.getLongitud());
+            }
+
+            view.missatge("Aproximació: " + s.getAproximacio());
+            view.missatge("Popularitat: " + s.getPopularitat());
+
+            if (s.getRestriccions() != null && !s.getRestriccions().isEmpty()) {
+                view.missatge("Restriccions: " + s.getRestriccions());
+            }
+        }
+    }
+
+    public void eliminarSector() {
+        view.missatge("\n=== ELIMINAR SECTOR ===");
+        List<Sector> sectors = sectorDAO.findAll();
+
+        if (sectors.isEmpty()) {
+            view.mostrarError("No hi ha sectors.");
+            return;
+        }
+
+        view.missatge("Sectors disponibles:");
+        for (Sector s : sectors) {
+            view.missatge(s.getId() + ". " + s.getNom());
+        }
+
+        view.missatge("ID del sector a eliminar (0 per sortir):");
+        int id = leerEntero();
+        if (id == 0)
+            return;
+
+        view.missatge("Esteu segur? (s/n):");
+        String confirm = sc.nextLine();
+        if (confirm.equalsIgnoreCase("s")) {
+            try {
+                sectorDAO.delete(id);
+                view.mostrarExito("Sector eliminat.");
+            } catch (RuntimeException e) {
+                view.mostrarError("Error: " + e.getMessage());
+            }
+        }
+    }
+
     // ########################## FUNC AUXILIARS
     private String elegirPopularitat() {
         view.missatge("\nPopularitat:");
