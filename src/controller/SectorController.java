@@ -131,6 +131,7 @@ public class SectorController {
         Sector sector = sectorDAO.findById(id);
         if (sector == null) {
             view.mostrarError("Sector no trobat");
+            return;
         }
 
         // Menú de modificació
