@@ -1,5 +1,6 @@
 package DAO.sqlite.escola;
 
+import model.Escalador;
 import model.Escola;
 import utils.DBConnection;
 
@@ -126,22 +127,18 @@ public class FindEscola {
         return poblacions;
     }
 
-    // funcio de mapeig
+    // Función de mapeo corregida
     private Escola mapResultSetToEscola(ResultSet rs) throws SQLException {
-        Escola escola;
-        try {
-            escola = Escola.class.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            // Si no tiene el campo, ignoramos
-        }
-        // Setear ID
-        try {
-            java.lang.reflect.Field field = Escola.class.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(escola, value);
-        } catch (Exception e) {
-            // Ignore if the field does not exist or cannot be set.
-        }
+        Escola escola = new Escola();
+
+        // Asignamos los campos básicos desde el ResultSet
+        escola.setId(rs.getInt("id"));
+        escola.setNom(rs.getString("nom"));
+        escola.setAproximacio(rs.getString("aproximacio"));
+        escola.setPopularitat(rs.getString("popularitat")); 
+        escola.setRestriccions(rs.getString("restriccions"));
+
+        return escola;
     }
 
 }
