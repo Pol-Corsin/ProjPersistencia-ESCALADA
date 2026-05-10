@@ -11,7 +11,7 @@ import java.sql.Statement;
 
 public class CreateEscola {
     public void execute(Escola escola) throws SQLException {
-        String sql = "INSERT INTO Escola (nom, aproximacio, popularitat, restriccions)";
+        String sql = "INSERT INTO Escola (nom, aproximacio, popularitat, restriccions) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement ptsmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
