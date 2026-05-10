@@ -4,18 +4,19 @@ import model.Escola;
 import java.util.List;
 
 public interface EscolaDAO {
-    // Operaciones CRUD Basicas
+    // Operaciones CRUD básicas
     void create(Escola escola);
     void update(Escola escola);
     void delete(int id);
-
-    // Busquedas
+    
+    // Búsquedas
     Escola findById(int id);
-    Escola findByName(String nom);
+    Escola findByNom(String nom);
     List<Escola> findAll();
-
-    // Metodes Extres
-    void createPoblacio(int escolaId, String nomPoblacio);
-    void findPoblacioByName(int escolaId, String nomPolbacio);
-    void findPoblacioById(int escolaId, int poblacioId);
+    List<Escola> findAmbRestriccionsActives();
+    List<Escola> findAmbMesDeXVies(int x);
+    
+    // Métodos de relación
+    void addPoblacio(int escolaId, String nomPoblacio);
+    List<String> findPoblacionsByEscolaId(int escolaId);
 }
