@@ -1,6 +1,5 @@
 package DAO.sqlite.escola;
 
-import model.Escalador;
 import model.Escola;
 import utils.DBConnection;
 
