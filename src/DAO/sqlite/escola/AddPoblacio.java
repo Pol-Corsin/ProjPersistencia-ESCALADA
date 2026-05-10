@@ -16,7 +16,7 @@ public class AddPoblacio {
             // Luego verificamos si la relación ya existe
             String checkSql = "SELECT 1 FROM Escola_Poblacio WHERE escola_id = ? AND poblacio_id = ?";
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
-checkStmt.setInt(1, escolaId);
+                checkStmt.setInt(1, escolaId);
                 checkStmt.setInt(2, poblacioId);
                 java.sql.ResultSet rs = checkStmt.executeQuery();
                 if (rs.next()) {
