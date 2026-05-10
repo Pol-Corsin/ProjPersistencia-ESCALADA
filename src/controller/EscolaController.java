@@ -65,7 +65,18 @@ public class EscolaController {
     }
 
     public void modificarEscola(){
-        
+        view.missatge("\n=== MODIFICAR ESCOLES ===");
+        List<Escola> escoles = escolaDAO.findAll();
+
+        if (escoles.isEmpty()) {
+            view.mostrarError("No hi ha esoles");
+            return;
+        }
+
+        view.missatge("Escoles Disponibles:");
+        for (Escola e: escoles){
+            view.missatge(e.getId() + " - " + e.getNom());
+        }
     }
 
 
