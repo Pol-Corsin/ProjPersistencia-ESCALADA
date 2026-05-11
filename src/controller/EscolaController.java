@@ -77,8 +77,92 @@ public class EscolaController {
         for (Escola e: escoles){
             view.missatge(e.getId() + " - " + e.getNom());
         }
+
+        view.missatge("Escriu l'ID de la Escola a modificar");
+        int id = leerEntero();
+        if (id == 0){
+            return;
+        }
+
+        Escola escola = escolaDAO.findById(id);
+        if (escola == null) {
+            view.mostrarError("Escola no trobada");
+            return;
+        }
+
+        //Menu de modificació
+        view.missatge("\nQuè voleu modificar?");
+        view.missatge("1. Nom");
+        view.missatge("2. Aproximació");
+        view.missatge("3. Popularitat");
+        view.missatge("4. Restriccions");
+        view.missatge("0. Sortir");
+
+        escollirModificacio(escola);
+
+        try {
+            escolaDAO.update(escola);
+            view.mostrarExito("Escola modificada");
+        } catch (Exception e) {
+            view.mostrarError("Error: " + e.getMessage());
+        }
     }
 
+    public void llistarEscoles(){
+        view.missatge("\n=== LLISTAR ESCOLES ===");
+        List<Escola> escoles = escolaDAO.findAll();
+
+        if (escoles.isEmpty()) {
+            view.missatge("No hi ha escoles");
+            return;
+        }
+
+        for (Escola escola : escoles) {
+            view.missatge("---");
+            view.missatge("ID: " + escola.getId());
+            view.missatge("Nom: " + escola.getNom());
+            view.missatge("Aproximacio: " + escola.getAproximacio());
+            view.missatge("Popularitat: " + escola.getPopularitat());
+
+            if (escola.getRestriccions() != null) {
+                view.missatge("Restriccions: " + escola.getRestriccions());
+            }
+
+        }
+    }
+
+    public void eliminarEscola(){
+        view.missatge("\n=== ELIMINAR ESCOLA ===");
+        List<Escola> escoles = escolaDAO.findAll();
+
+        if (escoles.isEmpty()) {
+            view.mostrarError("No hi ha escoles.");
+            return;
+        }
+
+        view.missatge("Escoles disponibles:");
+        for (Escola escola : escoles) {
+            view.missatge(escola.getId() + " . " + escola.getNom());
+        }
+
+        view.missatge("ID de la escola a eliminar (0 per sortir)");
+        int id = leerEntero();
+        if (id == 0) {
+            return;
+        }
+
+        view.missatge("Essteu segur? (s/n)");
+        String confirm = sc.nextLine();
+        if (confirm.equalsIgnoreCase("s")) {
+            try {
+                escolaDAO.delete(id);
+                view.mostrarError("Escola eliminada");
+            } catch (Exception e) {
+                view.mostrarError("Error " + e.getMessage());
+            }
+            
+        }
+    }
 
 
     private String escollirPopularitat() {
@@ -107,6 +191,51 @@ public class EscolaController {
         } while (respuesta == null);
         
         return respuesta;
+    }
+
+    private void escollirModificacio(Escola escola){
+        int opcio = -1;
+
+        do {
+            opcio = leerEntero();
+
+            switch (opcio) {
+                case 1:
+                    view.missatge("Nou nom de la escola:");
+                    escola.setNom(sc.nextLine().trim());
+                    break;
+                case 2:
+                    view.missatge("Nova aproximacio de la escola:");
+                    escola.setAproximacio(sc.nextLine().trim());
+                    break;
+                case 3:
+                    view.missatge("Nova popularitat de la escola:");
+                    String popularitat = escollirPopularitat();
+                    escola.setPopularitat(popularitat);
+                    break;
+                case 4:
+                    view.missatge("Nova restriccio de la escola:");
+                    escola.setRestriccions(sc.nextLine().trim());
+                    break;
+                case 0:
+                    view.missatge("Sortint de la modificació...");
+                    break;
+                default:
+                    view.missatge("Opció no vàlida. Torna a intentar-ho.");
+                    break;
+            }
+        } while (opcio != 0);
+    }
+
+    private int leerEntero() {
+        while (true) {
+            try {
+                String input = sc.nextLine();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                view.mostrarError("Introdueix un número vàlid:");
+            }
+        }
     }
 
 }
