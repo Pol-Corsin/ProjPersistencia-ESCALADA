@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Scanner;
 
 import DAO.interfaces.EscaladorDAO;
+import DAO.interfaces.EscolaDAO;
 import DAO.interfaces.SectorDAO;
 import DAO.interfaces.ViaDAO;
+import model.Escola;
 import model.Llarg;
 import model.Sector;
 import model.Via;
@@ -16,13 +18,15 @@ import view.MenuTerminal;
 
 public class ViaController {
     private final ViaDAO viaDAO;
+    private final EscolaDAO escolaDAO;
     private final SectorDAO sectorDAO;
     private final EscaladorDAO escaladorDAO;
     private final MenuTerminal view;
     private final Scanner sc;
 
-    public ViaController(ViaDAO viaDAO, SectorDAO sectorDAO, EscaladorDAO escaladorDAO) {
+    public ViaController(ViaDAO viaDAO, EscolaDAO escolaDAO, SectorDAO sectorDAO, EscaladorDAO escaladorDAO) {
         this.viaDAO = viaDAO;
+        this.escolaDAO = escolaDAO;
         this.sectorDAO = sectorDAO;
         this.escaladorDAO = escaladorDAO;
         this.view = new MenuTerminal();
@@ -221,10 +225,54 @@ public class ViaController {
     // ==================== LLISTAR VIA ====================
     public void llistarVies() {
         view.missatge("\n=== LLISTAR VIES ===");
-        List<Via> vies = viaDAO.findAll();
 
+        List<Escola> escoles = escolaDAO.findAll();
+        if (escoles.isEmpty()) {
+            view.mostrarError("No hi ha escoles registrades.");
+            return;
+        }
+
+        view.missatge("Escoles disponibles:");
+        for (Escola e : escoles) {
+            view.missatge(e.getId() + ". " + e.getNom());
+        }
+        view.missatge("ID de l'escola de la qual vols llistar les vies (0 per sortir):");
+        int escolaId = leerEntero();
+        if (escolaId == 0) {
+            return;
+        }
+
+        Escola escola = escolaDAO.findById(escolaId);
+        if (escola == null) {
+            view.mostrarError("Escola no trobada.");
+            return;
+        }
+
+        List<Sector> sectors = sectorDAO.findByEscolaId(escolaId);
+        if (sectors.isEmpty()) {
+            view.mostrarError("Aquesta escola no té sectors.");
+            return;
+        }
+
+        view.missatge("Sectors de l'escola " + escola.getNom() + ":");
+        for (Sector s : sectors) {
+            view.missatge(s.getId() + ". " + s.getNom());
+        }
+        view.missatge("ID del sector de la qual vols llistar les vies (0 per sortir):");
+        int sectorId = leerEntero();
+        if (sectorId == 0) {
+            return;
+        }
+
+        Sector sector = sectorDAO.findById(sectorId);
+        if (sector == null || sector.getEscolaId() != escolaId) {
+            view.mostrarError("Sector no vàlid o no pertany a l'escola seleccionada.");
+            return;
+        }
+
+        List<Via> vies = viaDAO.findBySectorId(sectorId);
         if (vies.isEmpty()) {
-            view.missatge("No hi ha vies.");
+            view.missatge("No hi ha vies en aquest sector.");
             return;
         }
 
@@ -244,8 +292,6 @@ public class ViaController {
             if (v.getRestriccions() != null) {
                 view.missatge("Restriccions: " + v.getRestriccions());
             }
-
-            // Mostrar llargs
             List<Llarg> llargs = viaDAO.findLlargsByViaId(v.getId());
             for (Llarg l : llargs) {
                 view.missatge("  Llarg " + l.getNumeroLlarg() + ": " + l.getLlargada() + "m - " + l.getGrau());

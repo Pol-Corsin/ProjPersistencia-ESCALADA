@@ -44,7 +44,7 @@ public class Main {
         escaladorController = new EscaladorController(escaladorDAO);
         escolaController = new EscolaController(escolaDAO);
         sectorController = new SectorController(sectorDAO, escolaDAO);
-        viaController = new ViaController(viaDAO, sectorDAO, escaladorDAO);
+        viaController = new ViaController(viaDAO, escolaDAO, sectorDAO, escaladorDAO);
     }
 
     private static void menuPrincipal() {
