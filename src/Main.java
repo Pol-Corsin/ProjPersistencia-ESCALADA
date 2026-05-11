@@ -2,7 +2,6 @@ import controller.*;
 import DAO.interfaces.*;
 import DAO.sqlite.*;
 import model.*;
-import utils.ValidadorRegexMenus;
 import view.MenuTerminal;
 import java.util.List;
 
