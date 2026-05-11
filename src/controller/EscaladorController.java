@@ -204,7 +204,7 @@ public class EscaladorController {
                 String input = sc.nextLine();
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                view.mostrarError("Introdueix un número vàlid:");
+                MenuTerminal.mostrarError("Introdueix un número vàlid:");
             }
         }
     }

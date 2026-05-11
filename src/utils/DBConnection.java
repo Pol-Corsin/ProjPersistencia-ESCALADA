@@ -15,17 +15,22 @@ public class DBConnection {
      */
     public static Connection getConnection() {
         try {
-            // Si la conexión no existe o se ha cerrado, la abrimos
             if (instance == null || instance.isClosed()) {
+                try {
+                    Class.forName("org.sqlite.JDBC");
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException("SQLite JDBC driver no encontrado. Añade sqlite-jdbc al classpath.", e);
+                }
+
                 instance = DriverManager.getConnection(URL);
-                
+
                 // ACTIVAR LAS FOREIGN KEYS (Vital para SQLite)
                 try (Statement stmt = instance.createStatement()) {
                     stmt.execute("PRAGMA foreign_keys = ON;");
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error al conectar con la base de datos: " + e.getMessage());
+            throw new RuntimeException("Error al conectar con la base de datos: " + e.getMessage(), e);
         }
         return instance;
     }
