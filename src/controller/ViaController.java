@@ -87,7 +87,7 @@ public class ViaController {
                 llargs.add(llarg);
             }
         }
-        
+
         // 6. Orientació
         String orientacio = elegirOrientacio();
 
@@ -139,6 +139,150 @@ public class ViaController {
             view.mostrarError("Error en crear la via: " + e.getMessage());
         }
 
+    }
+
+    // ==================== MODIFICAR VIA ====================
+    public void modificarVia() {
+        view.missatge("\n=== MODIFICAR VIA ===");
+        List<Via> vies = viaDAO.findAll();
+
+        if (vies.isEmpty()) {
+            view.mostrarError("No hi ha vies.");
+            return;
+        }
+
+        view.missatge("Vies disponibles:");
+        for (Via v : vies) {
+            view.missatge(v.getId() + ". " + v.getNom() + " (" + v.getTipus() + ") - " + v.getEstat());
+        }
+
+        view.missatge("ID de la via a modificar (0 per sortir):");
+        int id = leerEntero();
+        if (id == 0)
+            return;
+
+        Via via = viaDAO.findById(id);
+        if (via == null) {
+            view.mostrarError("Via no trobada.");
+            return;
+        }
+
+        // Menú de modificació
+        view.missatge("\nQuè voleu modificar?");
+        view.missatge("1. Nom");
+        view.missatge("2. Estat");
+        view.missatge("3. Data reobertura");
+        view.missatge("4. Ancoratge");
+        view.missatge("5. Roca");
+        view.missatge("6. Orientació");
+        view.missatge("7. Restriccions");
+        view.missatge("0. Sortir");
+
+        int opcio = leerEntero();
+        switch (opcio) {
+            case 1:
+                view.missatge("Nou nom:");
+                via.setNom(sc.nextLine());
+                break;
+            case 2:
+                via.setEstat(elegirEstat());
+                if (!"Apte".equals(via.getEstat())) {
+                    via.setDataReobertura(leerData("Nova data de reobertura:"));
+                }
+                break;
+            case 3:
+                via.setDataReobertura(leerData("Nova data de reobertura:"));
+                break;
+            case 4:
+                via.setAncoratge(elegirAncoratge(via.getTipus()));
+                break;
+            case 5:
+                via.setRoca(elegirRoca());
+                break;
+            case 6:
+                via.setOrientacio(elegirOrientacio());
+                break;
+            case 7:
+                view.missatge("Noves restriccions:");
+                via.setRestriccions(sc.nextLine());
+                break;
+            default:
+                return;
+        }
+
+        try {
+            viaDAO.update(via);
+            view.mostrarExito("Via modificada.");
+        } catch (RuntimeException e) {
+            view.mostrarError("Error: " + e.getMessage());
+        }
+    }
+
+    // ==================== LLISTAR VIA ====================
+    public void llistarVies() {
+        view.missatge("\n=== LLISTAR VIES ===");
+        List<Via> vies = viaDAO.findAll();
+
+        if (vies.isEmpty()) {
+            view.missatge("No hi ha vies.");
+            return;
+        }
+
+        for (Via v : vies) {
+            view.missatge("---");
+            view.missatge("ID: " + v.getId());
+            view.missatge("Nom: " + v.getNom());
+            view.missatge("Tipus: " + v.getTipus());
+            view.missatge("Estat: " + v.getEstat());
+            view.missatge("Roca: " + v.getRoca());
+            view.missatge("Ancoratge: " + v.getAncoratge());
+            view.missatge("Orientació: " + v.getOrientacio());
+            view.missatge("Creador ID: " + v.getCreadorId());
+            if (v.getDataReobertura() != null) {
+                view.missatge("Data reobertura: " + v.getDataReobertura());
+            }
+            if (v.getRestriccions() != null) {
+                view.missatge("Restriccions: " + v.getRestriccions());
+            }
+
+            // Mostrar llargs
+            List<Llarg> llargs = viaDAO.findLlargsByViaId(v.getId());
+            for (Llarg l : llargs) {
+                view.missatge("  Llarg " + l.getNumeroLlarg() + ": " + l.getLlargada() + "m - " + l.getGrau());
+            }
+        }
+    }
+
+    // ==================== ELIMINAR VIA ====================
+    public void eliminarVia() {
+        view.missatge("\n=== ELIMINAR VIA ===");
+        List<Via> vies = viaDAO.findAll();
+
+        if (vies.isEmpty()) {
+            view.mostrarError("No hi ha vies.");
+            return;
+        }
+
+        view.missatge("Vies disponibles:");
+        for (Via v : vies) {
+            view.missatge(v.getId() + ". " + v.getNom());
+        }
+
+        view.missatge("ID de la via a eliminar (0 per sortir):");
+        int id = leerEntero();
+        if (id == 0)
+            return;
+
+        view.missatge("Esteu segur? (s/n):");
+        String confirm = sc.nextLine();
+        if (confirm.equalsIgnoreCase("s")) {
+            try {
+                viaDAO.delete(id);
+                view.mostrarExito("Via eliminada.");
+            } catch (RuntimeException e) {
+                view.mostrarError("Error: " + e.getMessage());
+            }
+        }
     }
 
     // ########################## FUNC AUXILIARS
